@@ -57,8 +57,11 @@ python -m venv venv_agent_lab
 ```bash
 source venv_agent_lab/bin/activate
 ```
-
-3. **Install required libraries**
+or
+```bash
+.\venv_agent_lab\Scripts\activate
+```
+3. **Install required libraries** (install `tensorflow-io-gcs-filesystem` separately for Windows systems to avoid build error)
 ```bash
 pip install -r requirements.txt
 ```
