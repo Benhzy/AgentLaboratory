@@ -39,7 +39,7 @@ class BaseAgent:
         Initialize base agent
         
         Args:
-            agent_type: Type of agent (sg_lawyer, us_lawyer)
+            agent_type: Type of agent (internal, external etc)
             input_model: Model to use for this agent
             config: Configuration dictionary loaded from JSON
             api_keys: Dictionary of API keys by provider
@@ -185,7 +185,7 @@ class Internal(BaseAgent):
             "practice_implications",
             "review"
         ]
-        self.perspective = "singapore_law"
+        self.perspective = "internal_law"
         self.sg_statutes = {}                           #TODO implement VDB for contextual knowledge
         self.sg_case_law = {}
 
@@ -210,7 +210,7 @@ class External(BaseAgent):
             "practice_insights",
             "review"
         ]
-        self.perspective = "us_law"
+        self.perspective = "external_law"
         self.us_constitution = {}                           #TODO implement VDB for contextual knowledge
         self.us_case_law = {}
         
@@ -293,7 +293,7 @@ class LegalReviewPanel:
             Dictionary containing synthesized analysis
         """
         # Validate required perspectives
-        required_perspectives = {"singapore_law", "us_law"}
+        required_perspectives = {"internal_law", "external_law"}
         provided_perspectives = {r["perspective"] for r in reviews}
         
         if not required_perspectives.issubset(provided_perspectives):
@@ -303,9 +303,9 @@ class LegalReviewPanel:
         # Extract perspectives
         synthesis = {
             "sg_law_perspective": next(r["review"] for r in reviews 
-                                    if r["perspective"] == "singapore_law"),
-            "us_law_perspective": next(r["review"] for r in reviews 
-                                    if r["perspective"] == "us_law"),
+                                    if r["perspective"] == "internal_law"),
+            "external_law_perspective": next(r["review"] for r in reviews 
+                                    if r["perspective"] == "external_law"),
             "requires_revision": False,
             "synthesis": "",
             "recommendations": [],
@@ -317,7 +317,7 @@ class LegalReviewPanel:
             sys_prompt = self.review_config["synthesis"]["system_prompt"]
             synthesis_prompt = self.review_config["synthesis"]["synthesis_template"].format(
                 sg_law_perspective=synthesis["sg_law_perspective"],
-                us_law_perspective=synthesis["us_law_perspective"]
+                external_law_perspective=synthesis["external_law_perspective"]
             )
             
             # Generate synthesis

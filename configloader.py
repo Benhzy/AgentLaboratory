@@ -16,7 +16,7 @@ def load_agent_config(config_path: str = "settings/agents.json") -> Dict[str, An
             config = json.load(f)
             
         # Validate required agent types
-        required_agents = {'sg_lawyer', 'us_lawyer'}
+        required_agents = {'internal', 'external'}
         if not all(agent in config for agent in required_agents):
             missing = required_agents - set(config.keys())
             raise ValueError(f"Missing required agent configurations: {missing}")
@@ -85,7 +85,7 @@ if __name__ == "__main__":
         print("Successfully loaded agent configuration")
         
         # Modify configuration if needed
-        # config['sg_lawyer']['role_description'] = "Updated description..."
+        # config['internal']['role_description'] = "Updated description..."
         
         # Save modified config
         # save_agent_config(config)

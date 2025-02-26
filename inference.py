@@ -41,19 +41,21 @@ def curr_cost_est():
     }
     return sum([costmap_in[_]*TOKENS_IN[_] for _ in TOKENS_IN]) + sum([costmap_out[_]*TOKENS_OUT[_] for _ in TOKENS_OUT])
 
-def query_model(model_str, prompt, system_prompt, openai_api_key=None, anthropic_api_key=None, deepseek_api_key=None, tries=5, timeout=5.0, temp=None, print_cost=True, version="1.5"):
-    preloaded_api = os.getenv('OPENAI_API_KEY')
-    if openai_api_key is None and preloaded_api is not None:
-        openai_api_key = preloaded_api
-    if openai_api_key is None and anthropic_api_key is None and deepseek_api_key is None:
-        raise Exception("No API key provided in query_model function")
-    if openai_api_key is not None:
-        openai.api_key = openai_api_key
-        os.environ["OPENAI_API_KEY"] = openai_api_key
-    if anthropic_api_key is not None:
-        os.environ["ANTHROPIC_API_KEY"] = anthropic_api_key
-    if deepseek_api_key is not None:
-        os.environ["DEEPSEEK_API_KEY"] = deepseek_api_key
+def query_model(model_str, prompt, system_prompt, api_key, tries=5, timeout=5.0, temp=None, print_cost=True, version="1.5"):
+    
+    provider = get_provider(model_str)
+    
+    # Set the API key for the appropriate provider
+    if provider == "openai":
+        openai.api_key = api_key
+        os.environ["OPENAI_API_KEY"] = api_key
+    elif provider == "anthropic":
+        os.environ["ANTHROPIC_API_KEY"] = api_key
+    elif provider == "deepseek":
+        os.environ["DEEPSEEK_API_KEY"] = api_key
+    else:
+        raise Exception(f"Unknown provider for model: {model_str}")
+    
     for _ in range(tries):
         try:
             if model_str == "gpt-4o-mini" or model_str == "gpt4omini" or model_str == "gpt-4omini" or model_str == "gpt4o-mini":

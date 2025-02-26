@@ -5,7 +5,9 @@ from typing import Dict, List, Optional, Tuple
 from legalagents import Internal, External, LegalReviewPanel
 import argparse
 from configloader import load_agent_config
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class LegalSimulationWorkflow:
     def __init__(
@@ -262,7 +264,7 @@ def main():
         'deepseek': os.getenv('DEEPSEEK_API_KEY'),
         'anthropic': os.getenv('ANTHROPIC_API_KEY')
     }
-
+    print(api_keys)
     if not any(api_keys.values()):
         raise ValueError(
             "An API key must be provided via environment variable"
